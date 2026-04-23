@@ -1,5 +1,8 @@
+import { RouterProvider } from "react-router";
+import { routes } from "./app.routes";
+
 function App() {
-  return <h1 className="text-amber-300 text-8xl">Inkpot frontend</h1>;
+  return <RouterProvider router={routes} />;
 }
 
 export default App;
