@@ -37,14 +37,18 @@ export async function registerUserController(req, res) {
       process.env.JWT_SECRET,
     );
 
+    const verificationUrl = `${process.env.SERVER_URL}/api/auth/verify-email?token=${emailVerificationToken}`;
+
     // to, subject, html, text
     await sendEmail({
       to: email,
-      subject: "Welcome to Inkpot",
-      html: `<p>Hi ${username},</p>
+      subject: "Verify your Inkpot account",
+      html: `
+      <p>Hi ${username},</p>
       <p>Thank you for registering at <strong>Inkpot</strong>. We're excited to have you on board :)</p>
-      <p>Please verify your email by clicking the <a href=http://localhost:3000/api/auth/verify-email?token=${emailVerificationToken}>link</a></p>
-      <p>Thanks, Inpot Team</p>`,
+      <p>Please verify your email by clicking the link below:</p>
+      <p><a href="${verificationUrl}">Verify email</a></p>
+      <p>Thanks, <br />the Inkpot Team</p>`,
     });
 
     res.status(201).json({
