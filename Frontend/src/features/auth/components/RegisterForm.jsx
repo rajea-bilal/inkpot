@@ -5,6 +5,24 @@ import { useForm } from "react-hook-form";
 import { registerSchema } from "../schemas/auth.schema";
 import { Input } from "@/components/ui/input";
 
+const ArrowRightIcon = ({ className }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+  >
+    <path d="M5 12h14" />
+    <path d="m12 5 7 7-7 7" />
+  </svg>
+);
+
 const RegisterForm = () => {
   const {
     register,
@@ -49,133 +67,101 @@ const RegisterForm = () => {
   };
 
   return (
-    <div>
-      <div className="mb-10">
-        <h2 className="mb-2 text-2xl font-normal tracking-tight text-[#2d2824] lg:text-3xl">
-          Register
-        </h2>
-        <p className="text-sm font-normal text-[#8f8880]">
-          Create your account to access your autonomous workspace.
-        </p>
-      </div>
+    <div className="w-full max-w-[380px] p-8 mx-auto">
+      <h2 className="font-sans font-bold text-2xl mb-2 tracking-tight text-[#191918]">
+        Register
+      </h2>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
-        <div className="flex flex-col gap-2">
-          <label
-            htmlFor="email"
-            className="text-xs font-medium uppercase tracking-widest text-[#6e6862]"
-          >
-            Email
+      <p className="font-sans text-[#191918]/[0.45] text-[0.9rem] mb-8">
+        Create your account to access your autonomous workspace.
+      </p>
+
+      <form onSubmit={handleSubmit(onSubmit)} noValidate>
+        <div className="mb-5">
+          <label className="block font-mono text-[0.65rem] uppercase tracking-[0.05em] text-[#191918]/[0.45] mb-2">
+            Email Address
           </label>
 
-          <div className="group relative">
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
-              <span className="text-lg text-[#a39c94] transition-colors group-focus-within:text-orange-500">
-                @
-              </span>
-            </div>
-
-            <Input
-              id="email"
-              type="email"
-              placeholder="alica_smith@gmail.com"
-              {...register("email")}
-              className="h-auto w-full rounded-xl border border-transparent bg-[#f4f1eb] py-3 pr-4 pl-11 text-sm text-[#2d2824] placeholder:text-[#b0a8a0] focus-visible:border-orange-500/30 focus-visible:bg-[#fdfbf6] focus-visible:ring-4 focus-visible:ring-orange-500/10"
-            />
-          </div>
+          <Input
+            id="email"
+            type="email"
+            placeholder="name@company.com"
+            {...register("email")}
+            className="h-auto w-full bg-[#191918]/[0.02] border-[#191918]/[0.12] rounded-md px-4 py-3 font-sans text-[0.9rem] text-[#191918] transition-colors duration-200 outline-none focus-visible:ring-0 focus-visible:border-[#191918]/[0.45] shadow-none"
+          />
 
           {errors.email && (
-            <p className="text-sm text-red-500">{errors.email.message}</p>
+            <p className="text-[#e53e3e] text-[0.7rem] mt-1 font-mono">
+              {errors.email.message}
+            </p>
           )}
         </div>
 
-        <div className="flex flex-col gap-2">
-          <label
-            htmlFor="username"
-            className="text-xs font-medium uppercase tracking-widest text-[#6e6862]"
-          >
+        <div className="mb-5">
+          <label className="block font-mono text-[0.65rem] uppercase tracking-[0.05em] text-[#191918]/[0.45] mb-2">
             Username
           </label>
 
-          <div className="group relative">
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
-              <span className="text-sm text-[#a39c94] transition-colors group-focus-within:text-orange-500">
-                @
-              </span>
-            </div>
-
-            <Input
-              id="username"
-              type="text"
-              placeholder="alica_smith"
-              {...register("username")}
-              className="h-auto w-full rounded-xl border border-transparent bg-[#f4f1eb] py-3 pr-4 pl-11 text-sm text-[#2d2824] placeholder:text-[#b0a8a0] focus-visible:border-orange-500/30 focus-visible:bg-[#fdfbf6] focus-visible:ring-4 focus-visible:ring-orange-500/10"
-            />
-          </div>
+          <Input
+            id="username"
+            type="text"
+            placeholder="alice_smith"
+            {...register("username")}
+            className="h-auto w-full bg-[#191918]/[0.02] border-[#191918]/[0.12] rounded-md px-4 py-3 font-sans text-[0.9rem] text-[#191918] transition-colors duration-200 outline-none focus-visible:ring-0 focus-visible:border-[#191918]/[0.45] shadow-none"
+          />
 
           {errors.username && (
-            <p className="text-sm text-red-500">{errors.username.message}</p>
+            <p className="text-[#e53e3e] text-[0.7rem] mt-1 font-mono">
+              {errors.username.message}
+            </p>
           )}
         </div>
 
-        <div className="flex flex-col gap-2">
-          <label
-            htmlFor="password"
-            className="text-xs font-medium uppercase tracking-widest text-[#6e6862]"
-          >
-            Password
-          </label>
-
-          <div className="group relative">
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
-              <span className="text-sm text-[#a39c94] transition-colors group-focus-within:text-orange-500">
-                ••
-              </span>
-            </div>
-
-            <Input
-              id="password"
-              type="password"
-              placeholder="••••••••"
-              {...register("password")}
-              className="h-auto w-full rounded-xl border border-transparent bg-[#f4f1eb] py-3 pr-4 pl-11 text-sm text-[#2d2824] placeholder:text-[#b0a8a0] focus-visible:border-orange-500/30 focus-visible:bg-[#fdfbf6] focus-visible:ring-4 focus-visible:ring-orange-500/10"
-            />
+        <div className="mb-5">
+          <div className="flex justify-between items-baseline mb-2">
+            <label className="block font-mono text-[0.65rem] uppercase tracking-[0.05em] text-[#191918]/[0.45]">
+              Password
+            </label>
           </div>
 
+          <Input
+            id="password"
+            type="password"
+            placeholder="••••••••"
+            {...register("password")}
+            className="h-auto w-full bg-[#191918]/[0.02] border-[#191918]/[0.12] rounded-md px-4 py-3 font-sans text-[0.9rem] text-[#191918] transition-colors duration-200 outline-none focus-visible:ring-0 focus-visible:border-[#191918]/[0.45] shadow-none"
+          />
+
           {errors.password && (
-            <p className="text-sm text-red-500">{errors.password.message}</p>
+            <p className="text-[#e53e3e] text-[0.7rem] mt-1 font-mono">
+              {errors.password.message}
+            </p>
           )}
         </div>
 
-        <div className="mt-4">
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="group relative w-full rounded-xl bg-gradient-to-b from-[#e8e2d9] to-transparent p-[1px] shadow-sm outline-none transition-all active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
-          >
-            <div className="relative flex items-center justify-center gap-2 overflow-hidden rounded-[calc(0.75rem-1px)] bg-[#1a1714] px-4 py-3.5 transition-all duration-200 group-hover:bg-[#2d2824]">
-              <div className="pointer-events-none absolute top-0 left-0 h-1/2 w-full rounded-t-[calc(0.75rem-1px)] bg-white/5" />
-              <span className="relative z-10 text-sm font-medium tracking-wide text-[#fdfbf6]">
-                {isSubmitting ? "Creating account..." : "Create account"}
-              </span>
-              <span className="relative z-10 text-base text-[#fdfbf6] transition-transform group-hover:translate-x-1">
-                →
-              </span>
-            </div>
-          </button>
-        </div>
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className={`group w-full bg-[#FCAA2D] text-[#191918] p-3 rounded-md font-mono text-[0.75rem] font-semibold uppercase tracking-[0.1em] border-none cursor-pointer flex items-center justify-center gap-2 mt-6 transition-[filter] duration-200 ${
+            isSubmitting
+              ? "opacity-75 cursor-not-allowed"
+              : "hover:brightness-105"
+          }`}
+        >
+          {isSubmitting ? "Creating Account..." : "Create Account"}
+          {!isSubmitting && (
+            <ArrowRightIcon className="transition-transform duration-200 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:translate-x-1 inline-flex" />
+          )}
+        </button>
       </form>
 
-      <div className="mt-8 border-t border-[#e8e2d9]/60 pt-6 text-center">
-        <p className="text-xs text-[#8f8880]">
-          Already have an account?
-          <Link
-            to="/login"
-            className="ml-1 font-medium text-[#2d2824] underline decoration-[#e8e2d9] underline-offset-4 transition-colors hover:text-orange-600 hover:decoration-orange-300"
-          >
-            Login
-          </Link>
-        </p>
+      <div className="mt-4 flex flex-col gap-3 items-center">
+        <Link
+          to="/login"
+          className="font-mono text-[0.6rem] text-[#191918]/[0.45] uppercase tracking-[0.1em] transition-colors duration-200 hover:text-[#191918] no-underline"
+        >
+          Already have an account? Login
+        </Link>
       </div>
     </div>
   );
