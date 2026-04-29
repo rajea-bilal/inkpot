@@ -105,7 +105,8 @@ const LoginForm = () => {
                 type="email"
                 placeholder="name@company.com"
                 {...register("email")}
-                className="h-auto w-full bg-[#191918]/[0.02] border-[#191918]/[0.12] rounded-md px-4 py-3 font-sans text-[0.9rem] text-[#191918] transition-colors duration-200 outline-none focus-visible:ring-0 focus-visible:border-[#191918]/[0.45] shadow-none"
+                className="h-auto w-full bg-[#191918]/[0.02] border-[#191918]/[0.12] rounded-md px-4 py-3 font-sans text-[0.9rem] text-[#191918] transition-colors duration-200 outline-none  [&:-webkit-autofill]:shadow-[inset_0_0_0px_1000px_#edebdc]
+    [&:-webkit-autofill]:[-webkit-text-fill-color:#191918] focus-visible:ring-0 focus-visible:border-[#191918]/[0.45] shadow-none"
               />
 
               {errors.email && (
