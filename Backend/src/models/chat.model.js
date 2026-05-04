@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
--user - title - createdAt - updatedAt;
+// -user - title - createdAt - updatedAt;
 
 const chatSchema = new mongoose.Schema(
   {
