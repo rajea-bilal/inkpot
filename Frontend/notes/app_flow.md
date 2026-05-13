@@ -1,3 +1,11 @@
+Redux Flow:
+
+- UI calls hooks
+- hooks call API services
+- hooks dispatch Redux actions
+- Redux slice updates state
+- UI reads Redux with useSelector
+
 SocketIO Setup:
 
 - Backend

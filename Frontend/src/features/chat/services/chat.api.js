@@ -6,7 +6,9 @@ const api = axios.create({
 });
 
 export const sendChatMessage = async ({ message, chatId }) => {
-  const response = await api.post("/api/chats//message", {
+  console.log("message inside sendChatMessage API", message);
+  console.log("chatId inside sendChatMessage", chatId);
+  const response = await api.post("/api/chats/message", {
     message,
     chatId,
   });
@@ -20,7 +22,7 @@ export const getChats = async () => {
   return response.data;
 };
 
-export const getMessages = async ({ chatId }) => {
+export const getChatMessages = async ({ chatId }) => {
   const response = await api.get(`/api/chats/${chatId}/messages`);
 
   return response.data;

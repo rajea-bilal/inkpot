@@ -3,6 +3,7 @@
 Redux is a state management library. That means it helps you store and manage shared data for your whole app.
 
 Examples of shared data:
+
 - logged in user
 - cart items
 - theme
@@ -17,12 +18,14 @@ So instead of lots of components each holding their own copy of the same data, R
 In a small app, normal React state is often enough. But in a bigger app, lots of components may need the same data.
 
 **Example:**
+
 - `navbar` needs user info
 - `profile page` needs user info
 - `settings page` needs user info
 - `protected routes` need to know if user is logged in
 
 Without Redux, you often end up:
+
 - passing data down through many components
 - repeating logic
 - getting messy state
@@ -35,10 +38,13 @@ Redux helps by making **one single source of truth**. That means there is one ma
 You only really need these first:
 
 ### 1. Store
+
 The store is the central container for your app’s shared state.
 
 ### 2. State
+
 State is just data that can change. In your case:
+
 ```json
 {
   "user": null,
@@ -48,12 +54,15 @@ State is just data that can change. In your case:
 ```
 
 ### 3. Action
-An action is an object that says: *“something happened, update the state like this.”*
+
+An action is an object that says: _“something happened, update the state like this.”_
 Usually it has:
+
 - a `type`
 - optionally a `payload`
 
 **Example idea:**
+
 ```json
 {
   "type": "auth/setUser",
@@ -62,12 +71,16 @@ Usually it has:
 ```
 
 ### 4. Reducer
+
 A reducer is a function that receives the current state and the action, then updates the state. So:
+
 - **action** says what happened
 - **reducer** changes the state
 
 ### 5. Slice
+
 A slice is one section of the Redux state. Examples:
+
 - auth slice
 - cart slice
 - post slice
@@ -83,7 +96,9 @@ Your code has an `auth` slice, meaning it manages authentication-related state.
 ```javascript
 import { createSlice } from "@reduxjs/toolkit";
 ```
+
 You are importing `createSlice`. `createSlice` is a Redux Toolkit function that helps you create:
+
 - the slice
 - the reducers
 - the action creators
@@ -91,13 +106,16 @@ You are importing `createSlice`. `createSlice` is a Redux Toolkit function that 
 ...all in one place. Redux Toolkit is the modern easier way to write Redux.
 
 #### Creating the Slice
+
 ```javascript
 const authSlice = createSlice({
   name: "auth",
 ```
+
 You are creating a slice called `"auth"`. That means this slice is responsible for auth-related state.
 
 #### Initial State
+
 ```javascript
   initialState: {
     user: null,
@@ -105,7 +123,9 @@ You are creating a slice called `"auth"`. That means this slice is responsible f
     error: null,
   },
 ```
+
 This is the starting state. Meaning when the app first loads:
+
 - `user` is `null`
 - `loading` is `false`
 - `error` is `null`
@@ -113,6 +133,7 @@ This is the starting state. Meaning when the app first loads:
 So nothing has happened yet.
 
 #### Reducers
+
 ```javascript
   reducers: {
     setUser: (state, action) => {
@@ -126,40 +147,50 @@ So nothing has happened yet.
     },
   },
 ```
+
 These are your reducers. They define how the state changes.
 
 - **`setUser`**: Updates the user.
-  - *Example:* `dispatch(setUser({ id: 1, username: "Rajea" }))`
+  - _Example:_ `dispatch(setUser({ id: 1, username: "Rajea" }))`
   - Then: `user: null` becomes `user: { id: 1, username: "Rajea" }`
 - **`setLoading`**: Updates loading.
-  - *Example:* `dispatch(setLoading(true))`
+  - _Example:_ `dispatch(setLoading(true))`
   - Now Redux knows something is loading.
 - **`setError`**: Updates the error.
-  - *Example:* `dispatch(setError("Invalid password"))`
+  - _Example:_ `dispatch(setError("Invalid password"))`
   - Now Redux stores that error.
 
 #### What is `action.payload`?
+
 `payload` is the data you send with the action.
-- *Example:* `dispatch(setUser({ id: 1, username: "Rajea" }))`
+
+- _Example:_ `dispatch(setUser({ id: 1, username: "Rajea" }))`
 - The payload is: `{ "id": 1, "username": "Rajea" }`
 
-So this line: `state.user = action.payload;` means: *“take the data sent with the action and save it in user.”*
+So this line: `state.user = action.payload;` means: _“take the data sent with the action and save it in user.”_
 
 #### Important fix in your file
+
 You wrote:
+
 ```javascript
 export const { setUser, setLoading, setError } = authSlice;
 ```
+
 That should be:
+
 ```javascript
 export const { setUser, setLoading, setError } = authSlice.actions;
 ```
+
 Because the actions are inside `authSlice.actions`.
 
 #### Exporting the Reducer
+
 ```javascript
 export default authSlice.reducer;
 ```
+
 This exports the reducer for the auth slice. That reducer gets added to the store.
 
 ---
@@ -170,7 +201,9 @@ This exports the reducer for the auth slice. That reducer gets added to the stor
 import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "../features/auth/auth.slice";
 ```
+
 You import:
+
 - `configureStore` to create the Redux store
 - `authReducer` from your auth slice
 
@@ -181,11 +214,14 @@ export const store = configureStore({
   },
 });
 ```
+
 This creates the Redux store. And inside the store, you are saying:
+
 - create a section called `auth`
 - let `authReducer` manage it
 
 So your Redux state will look like:
+
 ```json
 {
   "auth": {
@@ -195,6 +231,7 @@ So your Redux state will look like:
   }
 }
 ```
+
 That is the shape of your global state right now.
 
 ---
@@ -205,6 +242,7 @@ Very simply:
 
 **`auth.slice.js`**:
 You define:
+
 - what the auth state looks like
 - how auth state can change
 
@@ -220,10 +258,13 @@ So together they are building a central auth state system.
 Let’s say the user logs in.
 
 ### 1. Start loading
+
 ```javascript
-dispatch(setLoading(true))
+dispatch(setLoading(true));
 ```
+
 State becomes:
+
 ```json
 auth: {
   user: null,
@@ -233,11 +274,14 @@ auth: {
 ```
 
 ### 2. Login succeeds
+
 ```javascript
-dispatch(setUser(userData))
-dispatch(setLoading(false))
+dispatch(setUser(userData));
+dispatch(setLoading(false));
 ```
+
 Now state becomes:
+
 ```json
 auth: {
   user: userData,
@@ -247,11 +291,14 @@ auth: {
 ```
 
 ### 3. Login fails
+
 ```javascript
-dispatch(setError("Email or password is wrong"))
-dispatch(setLoading(false))
+dispatch(setError("Email or password is wrong"));
+dispatch(setLoading(false));
 ```
+
 Now state becomes:
+
 ```json
 auth: {
   user: null,
@@ -263,6 +310,7 @@ auth: {
 ## Why this is useful
 
 Because any component in the app can read the same auth state. So:
+
 - `navbar` can show the username
 - `profile page` can show user info
 - `protected routes` can check if user exists
@@ -273,6 +321,7 @@ All from one central place.
 ## One more important thing
 
 Redux does not fetch data by itself. Redux only stores and updates state. So usually the flow is:
+
 1. user clicks login
 2. your app sends request to backend
 3. backend responds
@@ -285,6 +334,7 @@ So Redux is the state container, not the backend.
 ## Tiny summary
 
 Your code is doing this:
+
 1. creating an auth slice
 2. giving it default state: `user`, `loading`, `error`
 3. creating reducers to update those values

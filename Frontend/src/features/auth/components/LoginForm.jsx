@@ -30,6 +30,7 @@ const ArrowRightIcon = ({ className }) => (
 
 const LoginForm = () => {
   const dispatch = useDispatch();
+
   const {
     loading,
     error: authError,
