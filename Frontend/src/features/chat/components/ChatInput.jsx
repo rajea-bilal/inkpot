@@ -1,12 +1,28 @@
-import React from "react";
+import React, { useState } from "react";
 import { PaperclipIcon, ArrowUpIcon } from "../components/Icons";
+import { useChat } from "../hooks/useChat";
 
-const ChatInput = ({
-  inputValue,
-  setInputValue,
-  handleKeyDown,
-  handleSend,
-}) => {
+const ChatInput = ({ currentChatId }) => {
+  const [inputValue, setInputValue] = useState("");
+
+  const { handleSendChatMessage } = useChat();
+
+  console.log("currentChatId inside ChatInput:", currentChatId);
+
+  const handleSend = () => {
+    if (!inputValue.trim()) return;
+
+    handleSendChatMessage({
+      message: inputValue,
+      chatId: currentChatId,
+    });
+    setInputValue("");
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") handleSend();
+  };
+
   return (
     <div className="border border-[#191918]/10 rounded-lg bg-[#FAF9ED] p-3 flex items-center gap-4 shadow-[0_4px_20px_rgba(0,0,0,0.02)]">
       <span className="text-[#191918]/50 cursor-pointer flex">

@@ -20,6 +20,7 @@ import { useChat } from "../hooks/useChat";
 import { setCurrentChatId } from "../chat.slice";
 import { current } from "@reduxjs/toolkit";
 import ChatInput from "../components/ChatInput";
+import ChatSidebar from "../components/ChatSidebar";
 
 const NavIcon = ({ children, active, onClick }) => {
   return (
@@ -54,25 +55,12 @@ const ThreadItem = ({ thread, isActive, onClick }) => {
 const ChatPage = ({ activeNav, setActiveNav, onNavigateHome }) => {
   const dispatch = useDispatch();
 
-  const [activeThread, setActiveThread] = useState(1);
-  const [inputValue, setInputValue] = useState("");
-
-  const { handleSendChatMessage, handleGetChats, handleOpenChat } = useChat();
+  const { handleGetChats, handleOpenChat } = useChat();
 
   const allChats = useSelector((state) => state.chat.chats);
   let currentChatId = useSelector((state) => state.chat.currentChatId);
 
   console.log("currentChatId in the ChatPage", currentChatId);
-
-  const handleSend = () => {
-    if (!inputValue.trim()) return;
-
-    handleSendChatMessage({
-      message: inputValue,
-      chatId: currentChatId,
-    });
-    setInputValue("");
-  };
 
   useEffect(() => {
     handleGetChats();
@@ -81,15 +69,15 @@ const ChatPage = ({ activeNav, setActiveNav, onNavigateHome }) => {
     }
   }, []);
 
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") handleSend();
-  };
-
   const openChat = (chatId) => {
     dispatch(setCurrentChatId(chatId));
     handleOpenChat(chatId);
   };
 
+  const handleAddNewChat = () => {
+    console.log("handle add new chat ran");
+    dispatch(setCurrentChatId(null));
+  };
   return (
     <div className="flex h-screen w-full font-sans antialiased text-[#191918] bg-[#FFFEF2] relative">
       <div
@@ -169,31 +157,12 @@ const ChatPage = ({ activeNav, setActiveNav, onNavigateHome }) => {
       </nav>
 
       {/* Threads Panel (Secondary adjacent sidebar) */}
-      <aside className="w-[280px] bg-[#FFFEF2] border-r border-[#191918]/10 flex flex-col shrink-0 relative z-10">
-        <div className="p-6 border-b border-[#191918]/10">
-          <div className="font-mono text-[0.65rem] uppercase tracking-widest text-[#191918]/50 mb-1">
-            Conversations
-          </div>
-          <div className="font-sans font-medium text-sm text-[#191918]">
-            Threads
-          </div>
-        </div>
-        <div className="flex-1 overflow-y-auto">
-          {Object.values(allChats)?.map((thread) => (
-            <ThreadItem
-              key={thread._id}
-              thread={thread}
-              isActive={activeThread === thread._id}
-              onClick={() => openChat(thread._id)}
-            />
-          ))}
-        </div>
-        <div className="p-4 border-t border-[#191918]/10">
-          <button className="w-full py-2 border border-[#191918]/10 rounded font-mono text-[0.65rem] uppercase tracking-widest bg-transparent hover:bg-white transition-colors duration-200 cursor-pointer text-[#191918]">
-            New Chat
-          </button>
-        </div>
-      </aside>
+
+      <ChatSidebar
+        allChats={allChats}
+        openChat={openChat}
+        handleAddNewChat={handleAddNewChat}
+      />
 
       {/* Chat Main */}
 
@@ -213,12 +182,7 @@ const ChatPage = ({ activeNav, setActiveNav, onNavigateHome }) => {
           {!currentChatId ? (
             <div className="flex flex-col gap-6">
               <h3 className="text-center">Welcome to Inkpot Chat</h3>
-              <ChatInput
-                inputValue={inputValue}
-                setInputValue={setInputValue}
-                handleKeyDown={handleKeyDown}
-                handleSend={handleSend}
-              />
+              <ChatInput currentChatId={currentChatId} />
             </div>
           ) : (
             allChats[currentChatId]?.messages?.map((msg) => {
@@ -252,12 +216,7 @@ const ChatPage = ({ activeNav, setActiveNav, onNavigateHome }) => {
         {currentChatId && (
           <div className="px-[15%] pb-8 pt-8 bg-gradient-to-t from-[#FFFEF2] from-80% to-transparent">
             {/* chat Input */}
-            <ChatInput
-              inputValue={inputValue}
-              setInputValue={setInputValue}
-              handleKeyDown={handleKeyDown}
-              handleSend={handleSend}
-            />
+            <ChatInput currentChatId={currentChatId} />
           </div>
         )}
       </main>
