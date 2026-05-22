@@ -1,37 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 
-import {
-  HomeIcon,
-  MessageSquareIcon,
-  MicroscopeIcon,
-  MailIcon,
-  LayersIcon,
-  ListTreeIcon,
-  SettingsIcon,
-  HelpCircleIcon,
-  UserIcon,
-  ScrollIcon,
-  PaperclipIcon,
-  ArrowUpIcon,
-  MoreHorizontalIcon,
-} from "../components/Icons";
 import { useSelector, useDispatch } from "react-redux";
 import { useChat } from "../hooks/useChat";
 import { setCurrentChatId } from "../chat.slice";
-import { current } from "@reduxjs/toolkit";
+
 import ChatInput from "../components/ChatInput";
 import ChatSidebar from "../components/ChatSidebar";
-
-const NavIcon = ({ children, active, onClick }) => {
-  return (
-    <div
-      onClick={onClick}
-      className={`transition-colors duration-200 cursor-pointer ${active ? "text-[#191918]" : "text-[#191918]/50 hover:text-[#191918]"}`}
-    >
-      {children}
-    </div>
-  );
-};
+import MinimalSidebar from "../components/MinimalSidebar";
 
 const ThreadItem = ({ thread, isActive, onClick }) => {
   return (
@@ -52,7 +27,7 @@ const ThreadItem = ({ thread, isActive, onClick }) => {
   );
 };
 
-const ChatPage = ({ activeNav, setActiveNav, onNavigateHome }) => {
+const ChatPage = () => {
   const dispatch = useDispatch();
 
   const { handleGetChats, handleOpenChat } = useChat();
@@ -88,73 +63,7 @@ const ChatPage = ({ activeNav, setActiveNav, onNavigateHome }) => {
       />
 
       {/* Global Nav (Thin minimal sidebar) */}
-      <nav className="w-16 bg-[#F9F8E8] border-r border-[#191918]/10 flex flex-col items-center py-6 gap-8 shrink-0 relative z-10 overflow-y-auto overflow-x-hidden">
-        <div className="mb-4">
-          <div
-            onClick={onNavigateHome}
-            className="w-8 h-8 rounded bg-[#191918] flex items-center justify-center text-white font-bold text-lg font-sans cursor-pointer transition-opacity hover:opacity-80"
-          >
-            I
-          </div>
-        </div>
-        <div className="flex flex-col gap-6">
-          <NavIcon
-            active={activeNav === "home"}
-            onClick={() => setActiveNav("home")}
-          >
-            <HomeIcon />
-          </NavIcon>
-          <NavIcon
-            active={activeNav === "chat"}
-            onClick={() => setActiveNav("chat")}
-          >
-            <MessageSquareIcon />
-          </NavIcon>
-          <NavIcon
-            active={activeNav === "research"}
-            onClick={() => setActiveNav("research")}
-          >
-            <MicroscopeIcon />
-          </NavIcon>
-          <NavIcon
-            active={activeNav === "emails"}
-            onClick={() => setActiveNav("emails")}
-          >
-            <MailIcon />
-          </NavIcon>
-          <NavIcon
-            active={activeNav === "sources"}
-            onClick={() => setActiveNav("sources")}
-          >
-            <LayersIcon />
-          </NavIcon>
-          <NavIcon
-            active={activeNav === "threads"}
-            onClick={() => setActiveNav("threads")}
-          >
-            <ListTreeIcon />
-          </NavIcon>
-        </div>
-        <div className="mt-auto flex flex-col gap-6 mb-6">
-          <NavIcon
-            active={activeNav === "settings"}
-            onClick={() => setActiveNav("settings")}
-          >
-            <SettingsIcon />
-          </NavIcon>
-          <NavIcon
-            active={activeNav === "support"}
-            onClick={() => setActiveNav("support")}
-          >
-            <HelpCircleIcon />
-          </NavIcon>
-        </div>
-        <div className="">
-          <div className="w-8 h-8 rounded-full bg-[#191918]/10 border border-[#191918]/10 flex items-center justify-center font-mono text-[0.6rem] text-[#191918]">
-            AD
-          </div>
-        </div>
-      </nav>
+      <MinimalSidebar />
 
       {/* Threads Panel (Secondary adjacent sidebar) */}
 

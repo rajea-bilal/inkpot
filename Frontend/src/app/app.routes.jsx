@@ -4,6 +4,8 @@ import Login from "../features/auth/pages/Login";
 import Register from "../features/auth/pages/Register";
 import Dashboard from "@/features/chat/pages/Dashboard";
 import Protected from "@/features/auth/components/Protected";
+import ChatPage from "@/features/chat/pages/ChatPage";
+import HomePage from "@/features/chat/pages/HomePage";
 
 export const routes = createBrowserRouter([
   {
@@ -21,6 +23,16 @@ export const routes = createBrowserRouter([
         <Dashboard />
       </Protected>
     ),
+    children: [
+      {
+        index: true,
+        element: <HomePage />,
+      },
+      {
+        path: "chat",
+        element: <ChatPage />,
+      },
+    ],
   },
   {
     path: "/dashboard",

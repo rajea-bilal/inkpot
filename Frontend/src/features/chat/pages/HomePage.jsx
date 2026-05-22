@@ -1,31 +1,106 @@
-import React, { useState } from 'react';
-import Chip from '../components/Chip';
-import { ZapIcon, PlayCircleIcon, SearchIcon, MailIcon } from '../components/Icons';
+import React, { useState } from "react";
+import Chip from "../components/Chip";
+import { useDispatch, useSelector } from "react-redux";
+import { setCurrentChatId } from "../chat.slice";
+import {
+  ZapIcon,
+  PlayCircleIcon,
+  SearchIcon,
+  MailIcon,
+} from "../components/Icons";
+import { useNavigate } from "react-router";
 
 const HomePage = () => {
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
+  const dispatch = useDispatch();
 
-  const chips = ['Research a company', 'Compare tools', 'Summarise sources', 'Draft an email'];
+  const navigate = useNavigate();
+  const { user } = useSelector((state) => state.auth.user);
+  const chips = [
+    "Research a company",
+    "Compare tools",
+    "Summarise sources",
+    "Draft an email",
+  ];
 
   const handleChipClick = (chip) => {
     setInputValue(chip);
   };
 
   const docs = [
-    { name: '2024 Campaign Structure.pdf', date: 'Oct 24, 2023', type: 'Manuscript', typeColor: '#FCAA2D' },
-    { name: 'Aesthetica Branding Notes', date: 'Oct 21, 2023', type: 'Draft', typeColor: 'rgba(25,25,24,0.45)' },
-    { name: 'The Great API Schema v2', date: 'Oct 18, 2023', type: 'Technical', typeColor: 'rgba(25,25,24,0.45)' },
+    {
+      name: "2024 Campaign Structure.pdf",
+      date: "Oct 24, 2023",
+      type: "Manuscript",
+      typeColor: "#FCAA2D",
+    },
+    {
+      name: "Aesthetica Branding Notes",
+      date: "Oct 21, 2023",
+      type: "Draft",
+      typeColor: "rgba(25,25,24,0.45)",
+    },
+    {
+      name: "The Great API Schema v2",
+      date: "Oct 18, 2023",
+      type: "Technical",
+      typeColor: "rgba(25,25,24,0.45)",
+    },
   ];
+
+  const handleAddNewChat = () => {
+    console.log("handle add new chat ran from Homepage");
+    dispatch(setCurrentChatId(null));
+    navigate("/chat");
+  };
+
+  const firstname = user?.split(" ")[0];
+
+  // Each button has a unique key, an icon, a label, and whether it's the primary (dark) button
+  const actionButtons = [
+    {
+      key: "start",
+      icon: <PlayCircleIcon />,
+      label: "Start Chat",
+      primary: true,
+      action: handleAddNewChat,
+    },
+    {
+      key: "research",
+      icon: <SearchIcon />,
+      label: "Run Research",
+      primary: false,
+    },
+    {
+      key: "email",
+      icon: <MailIcon />,
+      label: "Compose Email",
+      primary: false,
+    },
+  ];
+
+  // Styles shared by every button
+  const baseButtonStyles =
+    "flex-1 py-4 rounded-lg font-mono text-xs uppercase tracking-wider flex items-center justify-center gap-3 transition-all duration-200 border border-[#191918]/10 cursor-pointer";
+
+  // The primary button is dark-filled; secondary buttons are light with a hover effect
+  const primaryButtonStyles = "bg-[#191918] text-[#FFFEF2] border-[#191918]";
+  const secondaryButtonStyles =
+    "bg-[#FFFEF2] hover:bg-[#191918]/10 text-[#191918]";
 
   return (
     <main className="grow h-screen overflow-y-auto p-16 relative">
-      <div className="absolute top-[15%] left-[10%] w-[80%] h-[60%] blur-[80px] pointer-events-none z-0"
-           style={{ background: 'radial-gradient(circle at 40% 40%, rgba(252, 170, 45, 0.04) 0%, rgba(100, 116, 139, 0.04) 100%)' }}>
-      </div>
+      <div
+        className="absolute top-[15%] left-[10%] w-[80%] h-[60%] blur-[80px] pointer-events-none z-0"
+        style={{
+          background:
+            "radial-gradient(circle at 40% 40%, rgba(252, 170, 45, 0.04) 0%, rgba(100, 116, 139, 0.04) 100%)",
+        }}
+      ></div>
 
       <header className="mb-12 relative z-10">
         <h1 className="text-3xl font-semibold tracking-[-0.025em] mb-2 mt-0">
-          Good evening, Marcus.
+          Hey, {firstname}
         </h1>
         <p className="text-[#191918]/45 text-lg font-light m-0">
           The archives are quiet. Ready to refine the signal?
@@ -34,7 +109,9 @@ const HomePage = () => {
 
       <section className="relative bg-[#FFFEF2]/70 backdrop-blur-md border border-[#191918]/10 rounded-2xl p-10 mb-12 shadow-[0_4px_24px_-12px_rgba(25,25,24,0.05)] z-10">
         <div className="flex items-center gap-2 mb-6">
-          <span className="text-[#FCAA2D]"><ZapIcon /></span>
+          <span className="text-[#FCAA2D]">
+            <ZapIcon />
+          </span>
           <h2 className="font-mono text-[0.7rem] uppercase tracking-widest text-[#191918]/45 m-0">
             Inkpot Intelligence
           </h2>
@@ -45,28 +122,25 @@ const HomePage = () => {
           className="w-full bg-transparent border-none text-2xl font-sans text-[#191918] py-4 outline-none placeholder:text-[#191918]/20"
           placeholder="What should we explore today?"
           value={inputValue}
-          onChange={e => setInputValue(e.target.value)}
+          onChange={(e) => setInputValue(e.target.value)}
         />
 
         <div className="flex flex-wrap gap-2 mt-4 mb-10">
-          {chips.map(chip => (
-            <Chip key={chip} label={chip} onClick={() => handleChipClick(chip)} />
+          {chips.map((chip) => (
+            <Chip
+              key={chip}
+              label={chip}
+              onClick={() => handleChipClick(chip)}
+            />
           ))}
         </div>
 
         <div className="flex gap-4 border-t border-[#191918]/10 pt-8">
-          {[
-            { key: 'start', icon: <PlayCircleIcon />, label: 'Start Chat', primary: true },
-            { key: 'research', icon: <SearchIcon />, label: 'Run Research', primary: false },
-            { key: 'email', icon: <MailIcon />, label: 'Compose Email', primary: false },
-          ].map(btn => (
+          {actionButtons.map((btn) => (
             <button
               key={btn.key}
-              className={`flex-1 py-4 rounded-lg font-mono text-xs uppercase tracking-wider flex items-center justify-center gap-3 transition-all duration-200 border border-[#191918]/10 cursor-pointer
-                ${btn.primary 
-                  ? 'bg-[#191918] text-[#FFFEF2] border-[#191918]' 
-                  : 'bg-[#FFFEF2] hover:bg-[#191918]/10 text-[#191918]'
-                }`}
+              onClick={() => btn?.action()}
+              className={`${baseButtonStyles} ${btn.primary ? primaryButtonStyles : secondaryButtonStyles}`}
             >
               {btn.icon}
               {btn.label}
@@ -81,16 +155,29 @@ const HomePage = () => {
             <h2 className="font-mono text-[0.7rem] uppercase tracking-widest text-[#191918]/45 m-0">
               Recent Documents
             </h2>
-            <a href="#" className="text-[0.65rem] font-mono border-b border-[#191918]/10 pb-0.5 text-[#191918] no-underline">
+            <a
+              href="#"
+              className="text-[0.65rem] font-mono border-b border-[#191918]/10 pb-0.5 text-[#191918] no-underline"
+            >
               View all
             </a>
           </div>
           <div>
             {docs.map((doc, i) => (
-              <div key={i} className="grid grid-cols-[1fr_140px_100px] py-4 border-b border-[#191918]/10 items-center text-sm relative">
+              <div
+                key={i}
+                className="grid grid-cols-[1fr_140px_100px] py-4 border-b border-[#191918]/10 items-center text-sm relative"
+              >
                 <span className="font-medium">{doc.name}</span>
-                <span className="font-mono text-[0.65rem] text-[#191918]/45">{doc.date}</span>
-                <span className="text-right font-mono text-[0.65rem]" style={{ color: doc.typeColor }}>{doc.type}</span>
+                <span className="font-mono text-[0.65rem] text-[#191918]/45">
+                  {doc.date}
+                </span>
+                <span
+                  className="text-right font-mono text-[0.65rem]"
+                  style={{ color: doc.typeColor }}
+                >
+                  {doc.type}
+                </span>
               </div>
             ))}
           </div>
@@ -102,18 +189,24 @@ const HomePage = () => {
               Ink Usage
             </h2>
             <div className="flex items-baseline gap-2 mb-2">
-              <span className="text-3xl font-semibold tracking-[-0.025em]">84%</span>
+              <span className="text-3xl font-semibold tracking-[-0.025em]">
+                84%
+              </span>
             </div>
             <div className="h-1 bg-[#191918]/10 rounded-full mb-6 overflow-hidden">
               <div className="h-full bg-[#FCAA2D] w-[84%]"></div>
             </div>
             <div className="grid grid-cols-2 gap-4 border-t border-[#191918]/10 pt-4">
               <div>
-                <div className="text-[0.55rem] font-mono uppercase text-[#191918]/45">Tokens</div>
+                <div className="text-[0.55rem] font-mono uppercase text-[#191918]/45">
+                  Tokens
+                </div>
                 <div className="text-base font-medium">1.2M</div>
               </div>
               <div>
-                <div className="text-[0.55rem] font-mono uppercase text-[#191918]/45">Queries</div>
+                <div className="text-[0.55rem] font-mono uppercase text-[#191918]/45">
+                  Queries
+                </div>
                 <div className="text-base font-medium">4,812</div>
               </div>
             </div>
