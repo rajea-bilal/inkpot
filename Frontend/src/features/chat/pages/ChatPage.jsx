@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-
+import ReactMarkdown from "react-markdown";
 import { useSelector, useDispatch } from "react-redux";
 import { useChat } from "../hooks/useChat";
 import { setCurrentChatId } from "../chat.slice";
@@ -30,7 +30,7 @@ const ThreadItem = ({ thread, isActive, onClick }) => {
 const ChatPage = () => {
   const dispatch = useDispatch();
 
-  const { handleGetChats, handleOpenChat } = useChat();
+  const { handleGetChats, fetchChatMessages } = useChat();
 
   const allChats = useSelector((state) => state.chat.chats);
   let currentChatId = useSelector((state) => state.chat.currentChatId);
@@ -40,13 +40,13 @@ const ChatPage = () => {
   useEffect(() => {
     handleGetChats();
     if (currentChatId) {
-      handleOpenChat(currentChatId);
+      fetchChatMessages(currentChatId);
     }
   }, []);
 
   const openChat = (chatId) => {
     dispatch(setCurrentChatId(chatId));
-    handleOpenChat(chatId);
+    fetchChatMessages(chatId);
   };
 
   const handleAddNewChat = () => {
@@ -87,7 +87,7 @@ const ChatPage = () => {
           </div>
         </header>
 
-        <div className="flex-1 overflow-y-auto px-[15%] pt-16 pb-8">
+        <div className="flex-1 overflow-y-auto px-[15%] pt-16 pb-8 main_chat">
           {!currentChatId ? (
             <div className="flex flex-col gap-6">
               <h3 className="text-center">Welcome to Inkpot Chat</h3>
@@ -113,7 +113,7 @@ const ChatPage = () => {
                     <div
                       className={`leading-[1.8] ${isUser ? "text-sm text-[#191918]/50 italic text-right bg-[#f2f0de] px-3 py-2 rounded-md" : "text-sm text-[#191918]/80  px-3 py-2 font-light text-left"}`}
                     >
-                      {msg.content}
+                      <ReactMarkdown>{msg.content}</ReactMarkdown>
                     </div>
                   </div>
                 </div>

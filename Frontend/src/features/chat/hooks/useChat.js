@@ -18,9 +18,9 @@ import {
 // HOOKS layer, calling the API layer
 // going to connect frontend with backend with the help of Socket.IO
 
-// hooks talks to the backend via services
-// reducer saves the result in Redux
-// UI reads the saved chat from Redux and displays it
+// useChat is the middleman.
+// calls the API, gets data back, then tells Redux what to store.
+// Redux stores it. The UI reads it.
 export const useChat = () => {
   const dispatch = useDispatch();
 
@@ -69,6 +69,7 @@ export const useChat = () => {
         }),
       );
 
+      // marks it as the open conversation
       dispatch(setCurrentChatId(chat?._id || chatId));
     } catch (error) {
       console.error(error);
@@ -100,7 +101,7 @@ export const useChat = () => {
     }
   }
 
-  async function handleOpenChat(chatId) {
+  async function fetchChatMessages(chatId) {
     dispatch(setLoading(true));
     try {
       const data = await getChatMessages({ chatId });
@@ -123,6 +124,6 @@ export const useChat = () => {
     initialiseSocketConnection,
     handleSendChatMessage,
     handleGetChats,
-    handleOpenChat,
+    fetchChatMessages,
   };
 };

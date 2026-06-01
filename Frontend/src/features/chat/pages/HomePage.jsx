@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Chip from "../components/Chip";
 import { useDispatch, useSelector } from "react-redux";
 import { setCurrentChatId } from "../chat.slice";
@@ -10,43 +10,31 @@ import {
 } from "../components/Icons";
 import { useNavigate } from "react-router";
 
+import { useChat } from "../hooks/useChat";
+
 const HomePage = () => {
-  const [inputValue, setInputValue] = useState("");
   const dispatch = useDispatch();
 
   const navigate = useNavigate();
-  const { user } = useSelector((state) => state.auth.user);
-  const chips = [
-    "Research a company",
-    "Compare tools",
-    "Summarise sources",
-    "Draft an email",
-  ];
+  const { user } = useSelector((state) => state.auth);
+  const { chats } = useSelector((state) => state.chat);
 
-  const handleChipClick = (chip) => {
-    setInputValue(chip);
-  };
+  // const [chats, setChats] = useState();
+  const { handleGetChats, fetchChatMessages } = useChat();
 
-  const docs = [
-    {
-      name: "2024 Campaign Structure.pdf",
-      date: "Oct 24, 2023",
-      type: "Manuscript",
-      typeColor: "#FCAA2D",
-    },
-    {
-      name: "Aesthetica Branding Notes",
-      date: "Oct 21, 2023",
-      type: "Draft",
-      typeColor: "rgba(25,25,24,0.45)",
-    },
-    {
-      name: "The Great API Schema v2",
-      date: "Oct 18, 2023",
-      type: "Technical",
-      typeColor: "rgba(25,25,24,0.45)",
-    },
-  ];
+  console.log("chats :", chats);
+
+  const recentConversations = Object.values(chats)
+    .map((chat) => {
+      return {
+        ...chat,
+        updatedAt: new Date(chat.updatedAt),
+      };
+    })
+    .sort((a, b) => b.updatedAt - a.updatedAt)
+    .slice(0, 3);
+
+  console.log("recentConversations:", recentConversations);
 
   const handleAddNewChat = () => {
     console.log("handle add new chat ran from Homepage");
@@ -54,7 +42,16 @@ const HomePage = () => {
     navigate("/chat");
   };
 
-  const firstname = user?.split(" ")[0];
+  const handleChatClick = (chatId) => {
+    console.log(
+      "handleChatClick function rang and chatId was received:",
+      chatId,
+    );
+    dispatch(setCurrentChatId(chatId));
+    fetchChatMessages(chatId);
+    navigate("chat");
+  };
+  const firstname = user.user?.split(" ")[0];
 
   // Each button has a unique key, an icon, a label, and whether it's the primary (dark) button
   const actionButtons = [
@@ -88,6 +85,19 @@ const HomePage = () => {
   const secondaryButtonStyles =
     "bg-[#FFFEF2] hover:bg-[#191918]/10 text-[#191918]";
 
+  // handleGetChats() on mount. That fetch populates Redux, and then useSelector reads from it.
+  useEffect(() => {
+    const fetchChats = async () => {
+      const chats = await handleGetChats();
+
+      console.log("chats received inside useEffect in HomePage:", chats);
+    };
+
+    fetchChats();
+  }, []);
+
+  // fetchMostRecentChats();
+
   return (
     <main className="grow h-screen overflow-y-auto p-16 relative">
       <div
@@ -117,24 +127,6 @@ const HomePage = () => {
           </h2>
         </div>
 
-        <input
-          type="text"
-          className="w-full bg-transparent border-none text-2xl font-sans text-[#191918] py-4 outline-none placeholder:text-[#191918]/20"
-          placeholder="What should we explore today?"
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-        />
-
-        <div className="flex flex-wrap gap-2 mt-4 mb-10">
-          {chips.map((chip) => (
-            <Chip
-              key={chip}
-              label={chip}
-              onClick={() => handleChipClick(chip)}
-            />
-          ))}
-        </div>
-
         <div className="flex gap-4 border-t border-[#191918]/10 pt-8">
           {actionButtons.map((btn) => (
             <button
@@ -153,7 +145,7 @@ const HomePage = () => {
         <div className="col-span-8">
           <div className="flex items-center justify-between mb-6">
             <h2 className="font-mono text-[0.7rem] uppercase tracking-widest text-[#191918]/45 m-0">
-              Recent Documents
+              Recent Conversations
             </h2>
             <a
               href="#"
@@ -163,20 +155,21 @@ const HomePage = () => {
             </a>
           </div>
           <div>
-            {docs.map((doc, i) => (
+            {recentConversations?.map((convo, i) => (
               <div
+                onClick={() => handleChatClick(convo._id)}
                 key={i}
-                className="grid grid-cols-[1fr_140px_100px] py-4 border-b border-[#191918]/10 items-center text-sm relative"
+                className="grid grid-cols-[1fr_140px_100px] py-4 border-b border-[#191918]/10 items-center text-sm relative cursor-pointer"
               >
-                <span className="font-medium">{doc.name}</span>
+                <span className="font-medium">{convo.title}</span>
                 <span className="font-mono text-[0.65rem] text-[#191918]/45">
-                  {doc.date}
+                  {convo?.updatedAt.toLocaleDateString()}
                 </span>
                 <span
                   className="text-right font-mono text-[0.65rem]"
-                  style={{ color: doc.typeColor }}
+                  style={{ color: convo?.typeColor }}
                 >
-                  {doc.type}
+                  {/* {convo?.type} */}
                 </span>
               </div>
             ))}

@@ -46,7 +46,14 @@ body {
 }
 
 .panel-gradient {
-  background: linear-gradient(180deg, #8ba5bb 0%, #e1c4a9 45%, #c48c5a 50%, #525333 65%, #2a2a1c 100%);
+  background: linear-gradient(
+    180deg,
+    #8ba5bb 0%,
+    #e1c4a9 45%,
+    #c48c5a 50%,
+    #525333 65%,
+    #2a2a1c 100%
+  );
   position: absolute;
   inset: 0;
   z-index: -1;
@@ -71,6 +78,10 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.main_chat::-webkit-scrollbar {
+  display: none;
 }
 
 @media (max-width: 860px) {

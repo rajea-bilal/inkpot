@@ -40,6 +40,34 @@ const { message, chat: chatId } = req.body;   // looking for "chat", not "chatId
 
 ---
 
+### Bug: Duplicate messages appearing in chat
+
+**Date:** 2026-05-24
+**Status:** resolved
+
+**Problem:**
+Opening a conversation showed every message twice. React also logged warnings about "duplicate keys" in the console.
+
+**Root cause:**
+Two things went wrong together:
+
+1. `setCurrentChat` in the slice used `push(...messages)` to add messages. Push *appends* — it doesn't replace. So if `handleOpenChat` got called twice for the same chat (once from HomePage when clicking a conversation, once from ChatPage's `useEffect` on mount), the same messages were pushed in twice.
+
+2. Messages added locally via `addNewMessageToChat` have no `_id` (just `content` and `role`). The UI uses `key={msg._id}` on each message, so those messages all get `key={undefined}` — React sees that as duplicate keys too.
+
+**Resolution:**
+Changed `setCurrentChat` to assign the messages array instead of pushing into it:
+
+```js
+// Before — appends, causes duplicates
+state.chats[chatId].messages.push(...messages);
+
+// After — replaces, always clean
+state.chats[chatId].messages = action.payload.messages;
+```
+
+---
+
 ### Bug: Follow-up messages crash the app (`null._id`)
 
 **Where:** Backend `chat.controller.js` → Frontend `useChat.js`
