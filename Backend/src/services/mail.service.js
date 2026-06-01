@@ -1,7 +1,7 @@
 import nodemailer from "nodemailer";
 // Nodemailer is a Node.js library that talks to an email provider.
 
-//Nodemailer needs permission to use your Gmail account.
+// Nodemailer needs permission to use your Gmail account.
 // Because Google does not want apps using your actual Gmail password,
 // you use OAuth2 instead.
 // Nodemailer’s OAuth2 flow uses the refresh token to automatically generate short-lived access tokens when needed
