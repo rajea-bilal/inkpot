@@ -131,3 +131,25 @@ web servers communicate with smtp server, the smtp server can then forward an em
 acts like the bridge between web server & smtp server
 
 smtp server can then send an email to an email account.
+
+## searchInternet functionality flow:
+
+Tavily — a search engine with an API. You give it a query string, it returns web results. That's all it does. It has no awareness of AI or conversations.
+
+LangChain — a framework that connects AI models with external tools. It handles the back-and-forth loop between the model and your tools so you don't have to wire
+that up yourself.
+
+Gemini — the AI model. Reads the conversation, decides what to do next, generates text.
+
+---
+
+The sequence when a user sends a message:
+
+1. User asks something — e.g. "what's the latest news on AI?"
+2. Agent passes that to Gemini along with a description of the available tools
+3. Gemini decides: "I need fresh data, I should use search_internet"
+4. LangChain calls your searchInternet function with a query it constructs
+5. Tavily searches the web and returns results
+6. LangChain passes those results back to Gemini
+7. Gemini reads the results and writes a final answer
+8. That answer comes back to the user
