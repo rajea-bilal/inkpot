@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Chip from "../components/Chip";
 import { useDispatch, useSelector } from "react-redux";
 import { setCurrentChatId } from "../chat.slice";
@@ -96,8 +96,6 @@ const HomePage = () => {
     fetchChats();
   }, []);
 
-  // fetchMostRecentChats();
-
   return (
     <main className="grow h-screen overflow-y-auto p-16 relative">
       <div
@@ -109,7 +107,7 @@ const HomePage = () => {
       ></div>
 
       <header className="mb-12 relative z-10">
-        <h1 className="text-3xl font-semibold tracking-[-0.025em] mb-2 mt-0">
+        <h1 className="text-3xl font-semibold tracking-tight mb-2 mt-0">
           Hey, {firstname}
         </h1>
         <p className="text-[#191918]/45 text-lg font-light m-0">
@@ -182,9 +180,7 @@ const HomePage = () => {
               Ink Usage
             </h2>
             <div className="flex items-baseline gap-2 mb-2">
-              <span className="text-3xl font-semibold tracking-[-0.025em]">
-                84%
-              </span>
+              <span className="text-3xl font-semibold tracking-tight">84%</span>
             </div>
             <div className="h-1 bg-[#191918]/10 rounded-full mb-6 overflow-hidden">
               <div className="h-full bg-[#FCAA2D] w-[84%]"></div>

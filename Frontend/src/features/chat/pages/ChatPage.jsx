@@ -1,5 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { useSelector, useDispatch } from "react-redux";
 import { useChat } from "../hooks/useChat";
 import { setCurrentChatId } from "../chat.slice";
@@ -33,9 +34,16 @@ const ChatPage = () => {
   const { handleGetChats, fetchChatMessages } = useChat();
 
   const allChats = useSelector((state) => state.chat.chats);
+  const { user } = useSelector((state) => state.auth);
   let currentChatId = useSelector((state) => state.chat.currentChatId);
 
+  const [userMessage, setUserMessage] = useState();
+
   console.log("currentChatId in the ChatPage", currentChatId);
+  console.log("userMessage state inside ChatPage:", userMessage);
+  console.log("allChats inside ChatPage:", allChats);
+
+  const firstname = user.user?.split(" ")[0];
 
   useEffect(() => {
     handleGetChats();
@@ -53,6 +61,7 @@ const ChatPage = () => {
     console.log("handle add new chat ran");
     dispatch(setCurrentChatId(null));
   };
+
   return (
     <div className="flex h-screen w-full font-sans antialiased text-[#191918] bg-[#FFFEF2] relative">
       <div
@@ -88,44 +97,71 @@ const ChatPage = () => {
         </header>
 
         <div className="flex-1 overflow-y-auto px-[15%] pt-16 pb-8 main_chat">
-          {!currentChatId ? (
+          {/* if theres no chatId means there's no chat so we render a welcome message */}
+          {!currentChatId && (
             <div className="flex flex-col gap-6">
               <h3 className="text-center">Welcome to Inkpot Chat</h3>
-              <ChatInput currentChatId={currentChatId} />
+              <ChatInput
+                currentChatId={currentChatId}
+                setUserMessage={setUserMessage}
+              />
             </div>
-          ) : (
+          )}
+
+          {/* if currentChatId exists then display the chat messages */}
+          {currentChatId &&
             allChats[currentChatId]?.messages?.map((msg) => {
               // msg is an object
               const isUser = msg.role === "user";
+              console.log("msg ids:", msg._id);
               return (
                 <div
                   key={msg._id}
                   className={`mb-6 w-full flex ${isUser ? "justify-end" : "justify-start"}`}
                 >
                   <div
-                    className={`max-w-[700px] ${!isUser ? "border-l-2 border-[#FCAA2D] pl-6" : ""}`}
+                    className={`max-w-175 ${!isUser ? "border-l-2 border-[#FCAA2D] pl-6" : ""}`}
                   >
                     <div
                       className={`font-mono text-[0.6rem] uppercase tracking-[0.15em] text-[#191918]/40 mb-2 ${isUser ? "text-right" : "text-left"}`}
                     >
-                      <span>{isUser ? "HUMAN" : "INKPOT"}</span>
+                      <span>{isUser ? firstname : "INKPOT"}</span>
                     </div>
                     <div
-                      className={`leading-[1.8] ${isUser ? "text-sm text-[#191918]/50 italic text-right bg-[#f2f0de] px-3 py-2 rounded-md" : "text-sm text-[#191918]/80  px-3 py-2 font-light text-left"}`}
+                      className={`leading-[1.8] ${isUser ? "text-sm text-[#191918]/50 italic text-right bg-[#f2f0de] px-3 py-2 rounded-md" : "text-sm text-[#191918]/80  px-3 py-2 font-light text-left prose max-w-none"}`}
                     >
-                      <ReactMarkdown>{msg.content}</ReactMarkdown>
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                        {msg.content}
+                      </ReactMarkdown>
                     </div>
                   </div>
                 </div>
               );
-            })
+            })}
+
+          {/* Implementing optimistic UI pattern so user sees their message straight away. As long as userMessage exists in state, display that, when it becomes empty on response from server, its place is taken by server messages */}
+          {userMessage && (
+            <div className="mb-6 w-full flex justify-end ">
+              <div className="max-w-175 pl-6">
+                <div className="font-mono text-[0.6rem] uppercase tracking-[0.15em] text-[#191918]/40 mb-2 text-right">
+                  <span>{firstname}</span>
+                </div>
+                <div className="leading-[1.8] text-sm text-[#191918]/50 italic text-right bg-[#f2f0de] px-3 py-2 rounded-md">
+                  {" "}
+                  {userMessage}
+                </div>
+              </div>
+            </div>
           )}
         </div>
 
         {currentChatId && (
-          <div className="px-[15%] pb-8 pt-8 bg-gradient-to-t from-[#FFFEF2] from-80% to-transparent">
+          <div className="px-[15%] pb-8 pt-8 bg-linear-to-t from-[#FFFEF2] from-80% to-transparent">
             {/* chat Input */}
-            <ChatInput currentChatId={currentChatId} />
+            <ChatInput
+              currentChatId={currentChatId}
+              setUserMessage={setUserMessage}
+            />
           </div>
         )}
       </main>

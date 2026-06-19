@@ -7,7 +7,7 @@ import {
   createAgent,
 } from "langchain";
 import { ChatMistralAI } from "@langchain/mistralai";
-import { searchInternet } from "./internet.service";
+import { searchInternet } from "./internet.service.js";
 import * as z from "zod";
 
 // AI processing layer -
@@ -41,7 +41,7 @@ const searchInternetTool = tool(searchInternet, {
 // answer directly or needs to call a tool (like searchInternetTool)
 // takes the respond from calling the tool and uses it to answer user query
 const agent = createAgent({
-  model: geminiModel,
+  model: mistralModel,
   tools: [searchInternetTool],
 });
 

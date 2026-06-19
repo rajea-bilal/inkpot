@@ -2,25 +2,34 @@ import React, { useState } from "react";
 import { PaperclipIcon, ArrowUpIcon } from "../components/Icons";
 import { useChat } from "../hooks/useChat";
 
-const ChatInput = ({ currentChatId }) => {
+const ChatInput = ({ currentChatId, setUserMessage }) => {
   const [inputValue, setInputValue] = useState("");
 
   const { handleSendChatMessage } = useChat();
 
-  console.log("currentChatId inside ChatInput:", currentChatId);
-
-  const handleSend = () => {
+  const handleSend = async () => {
     if (!inputValue.trim()) return;
 
-    handleSendChatMessage({
+    setUserMessage(inputValue);
+
+    //❯ so handleSendChatMessage is a function that returns a promise
+    // and that promise gets saved inside sendUserMessageToServer
+    // so now the inputValue has already been captured and a network request is made
+    // we can now safely clean the input
+    const sendUserMessageToServer = handleSendChatMessage({
       message: inputValue,
       chatId: currentChatId,
     });
     setInputValue("");
+    await sendUserMessageToServer;
+
+    setUserMessage("");
   };
 
   const handleKeyDown = (e) => {
-    if (e.key === "Enter") handleSend();
+    if (e.key === "Enter") {
+      handleSend();
+    }
   };
 
   return (

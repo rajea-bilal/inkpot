@@ -47,15 +47,13 @@ const Sidebar = () => {
 
   console.log("user from sidebar:", user);
   return (
-    <aside className="w-[260px] h-screen border-r border-[#191918]/10 flex flex-col py-10 px-6 shrink-0 bg-[#FFFEF2] z-10">
+    <aside className="w-65 h-screen border-r border-[#191918]/10 flex flex-col py-10 px-6 shrink-0 bg-[#FFFEF2] z-10">
       <div className="flex items-center gap-2 mb-12">
         <div className="w-5 h-5 bg-[#FCAA2D] rounded"></div>
-        <span className="font-semibold text-lg tracking-[-0.025em]">
-          Inkpot
-        </span>
+        <span className="font-semibold text-lg tracking-tight">Inkpot</span>
       </div>
 
-      <nav className="flex-grow">
+      <nav className="grow">
         {navItems.map((item) => (
           <NavItem
             key={item.key}
@@ -79,7 +77,7 @@ const Sidebar = () => {
       <div className="mt-auto border-t border-[#191918]/10 pt-6">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center font-mono text-xs text-orange-800">
-            {user.user.slice(0, 1)}
+            {user?.usernam?.slice(0, 1)}
           </div>
           <div>
             <div className="text-sm font-medium leading-none mb-1">

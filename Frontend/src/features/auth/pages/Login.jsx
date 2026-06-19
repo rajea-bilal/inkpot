@@ -29,7 +29,7 @@ const Login = () => {
 
         <div className="absolute top-10 right-10 z-10 flex items-center gap-2">
           <PulsingDot />
-          <span className="font-mono text-[0.65rem] text-white/50 tracking-[0.05em]">
+          <span className="font-mono text-[0.65rem] text-white/50 tracking-wider">
             All systems operational
           </span>
         </div>

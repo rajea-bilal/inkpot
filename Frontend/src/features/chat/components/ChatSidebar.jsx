@@ -21,8 +21,10 @@ const ThreadItem = ({ thread, isActive, onClick }) => {
 
 const ChatSidebar = ({ allChats, openChat, handleAddNewChat }) => {
   const [activeThread, setActiveThread] = useState(1);
+
+  console.log("allChats inside ChatSidebar:", allChats);
   return (
-    <aside className="w-[280px] bg-[#FFFEF2] border-r border-[#191918]/10 flex flex-col shrink-0 relative z-10">
+    <aside className="w-70 bg-[#FFFEF2] border-r border-[#191918]/10 flex flex-col shrink-0 relative z-10">
       <div className="p-6 border-b border-[#191918]/10">
         <div className="font-mono text-[0.65rem] uppercase tracking-widest text-[#191918]/50 mb-1">
           Conversations
