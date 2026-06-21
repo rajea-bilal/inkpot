@@ -19,10 +19,10 @@ const HomePage = () => {
   const { user } = useSelector((state) => state.auth);
   const { chats } = useSelector((state) => state.chat);
 
-  // const [chats, setChats] = useState();
+
   const { handleGetChats, fetchChatMessages } = useChat();
 
-  console.log("chats :", chats);
+
 
   const recentConversations = Object.values(chats)
     .map((chat) => {
@@ -34,7 +34,7 @@ const HomePage = () => {
     .sort((a, b) => b.updatedAt - a.updatedAt)
     .slice(0, 3);
 
-  console.log("recentConversations:", recentConversations);
+ 
 
   const handleAddNewChat = () => {
     console.log("handle add new chat ran from Homepage");
@@ -51,7 +51,7 @@ const HomePage = () => {
     fetchChatMessages(chatId);
     navigate("chat");
   };
-  const firstname = user.user?.split(" ")[0];
+  const firstname = user.username?.split(" ")[0];
 
   // Each button has a unique key, an icon, a label, and whether it's the primary (dark) button
   const actionButtons = [
@@ -97,7 +97,7 @@ const HomePage = () => {
   }, []);
 
   return (
-    <main className="grow h-screen overflow-y-auto p-16 relative">
+    <main className="grow min-h-0 overflow-y-auto p-6 sm:p-10 lg:p-16 relative">
       <div
         className="absolute top-[15%] left-[10%] w-[80%] h-[60%] blur-[80px] pointer-events-none z-0"
         style={{
@@ -106,8 +106,8 @@ const HomePage = () => {
         }}
       ></div>
 
-      <header className="mb-12 relative z-10">
-        <h1 className="text-3xl font-semibold tracking-tight mb-2 mt-0">
+      <header className="mb-8 sm:mb-12 relative z-10">
+        <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight mb-2 mt-0">
           Hey, {firstname}
         </h1>
         <p className="text-[#191918]/45 text-lg font-light m-0">
@@ -115,7 +115,7 @@ const HomePage = () => {
         </p>
       </header>
 
-      <section className="relative bg-[#FFFEF2]/70 backdrop-blur-md border border-[#191918]/10 rounded-2xl p-10 mb-12 shadow-[0_4px_24px_-12px_rgba(25,25,24,0.05)] z-10">
+      <section className="relative bg-[#FFFEF2]/70 backdrop-blur-md border border-[#191918]/10 rounded-2xl p-6 sm:p-10 mb-8 sm:mb-12 shadow-[0_4px_24px_-12px_rgba(25,25,24,0.05)] z-10">
         <div className="flex items-center gap-2 mb-6">
           <span className="text-[#FCAA2D]">
             <ZapIcon />
@@ -125,7 +125,7 @@ const HomePage = () => {
           </h2>
         </div>
 
-        <div className="flex gap-4 border-t border-[#191918]/10 pt-8">
+        <div className="flex flex-col lg:flex-row gap-4 border-t border-[#191918]/10 pt-8">
           {actionButtons.map((btn) => (
             <button
               key={btn.key}
@@ -139,8 +139,8 @@ const HomePage = () => {
         </div>
       </section>
 
-      <div className="grid grid-cols-12 gap-12 relative z-10">
-        <div className="col-span-8">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 relative z-10">
+        <div className="lg:col-span-8">
           <div className="flex items-center justify-between mb-6">
             <h2 className="font-mono text-[0.7rem] uppercase tracking-widest text-[#191918]/45 m-0">
               Recent Conversations
@@ -157,7 +157,7 @@ const HomePage = () => {
               <div
                 onClick={() => handleChatClick(convo._id)}
                 key={i}
-                className="grid grid-cols-[1fr_140px_100px] py-4 border-b border-[#191918]/10 items-center text-sm relative cursor-pointer"
+                className="grid grid-cols-[1fr_auto_auto] gap-3 py-4 border-b border-[#191918]/10 items-center text-sm relative cursor-pointer"
               >
                 <span className="font-medium">{convo.title}</span>
                 <span className="font-mono text-[0.65rem] text-[#191918]/45">
@@ -174,7 +174,7 @@ const HomePage = () => {
           </div>
         </div>
 
-        <div className="col-span-4">
+        <div className="lg:col-span-4">
           <div className="border border-[#191918]/10 rounded-xl p-6 bg-[#FFFEF2]/40 backdrop-blur-sm">
             <h2 className="font-mono text-[0.6rem] uppercase tracking-widest text-[#191918]/45 mb-4 mt-0">
               Ink Usage
