@@ -9,7 +9,7 @@ import { sendEmail } from "../services/mail.service.js";
 export async function registerUserController(req, res) {
   const { username, email, password } = req.body;
 
-  console.log("request for registering reached controller", req.body);
+
   try {
     const userAlreadyExists = await userModel.findOne({
       $or: [{ email }, { username }],
@@ -37,8 +37,9 @@ export async function registerUserController(req, res) {
       process.env.JWT_SECRET,
     );
 
-    const verificationUrl = `${process.env.SERVER_URL}/api/auth/verify-email?token=${emailVerificationToken}`;
+    const verificationUrl = `${process.env.FRONTEND_URL}/verified-email?token=${emailVerificationToken}`;
 
+    console.log("verificationUrl", verificationUrl);
     // to, subject, html, text
     await sendEmail({
       to: email,
@@ -64,7 +65,7 @@ export async function registerUserController(req, res) {
     // nodemail needs 4 things:
     // client id, client secret, refresh token
   } catch (err) {
-    res.status(200).json({
+    res.status(404).json({
       message: err.message,
     });
   }
@@ -105,13 +106,6 @@ export async function loginUserController(req, res) {
     });
   }
 
-  const emailVerificationToken = jwt.sign(
-    {
-      email: user.email,
-      id: user._id,
-    },
-    process.env.JWT_SECRET,
-  );
   // user is not verified
   if (!user.verified) {
     return res.status(400).json({
@@ -165,22 +159,35 @@ export async function verifyEmailController(req, res) {
 
     // if user's email is already verified (link's been clicked before) then show a different page
     if (user.verified) {
-      const verifiedHtml = `<h1>Your email has already been verified</h1>
-    <p>You can now log in to your account.</p>
-    <a href=http://localhost:3000/login>Go to login</a>`;
 
-      return res.send(verifiedHtml);
+      return res.status(200).json({
+        message: "Email already verified",
+        success: true,
+        user: {
+          id: user._id,
+          username: user.username,
+          email: user.email,
+          verified: user.verified,
+        },
+      });
     }
 
     user.verified = true;
 
     await user.save();
 
-    const html = `<h1>Email verified successfully</h1>
-    <p>Your email has been verified. You can now log in to your account.</p>
-    <a href=http://localhost:3000/login>Go to login</a>`;
+ 
 
-    return res.send(html);
+    return res.status(200).json({
+      message: "Email verified successfully",
+      success: true,
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        verified: user.verified,
+      },
+    });
   } catch (err) {
     return res.status(400).json({
       message: "invalid or expired token",
@@ -192,9 +199,12 @@ export async function verifyEmailController(req, res) {
 
 export async function resendEmailController(req, res) {
   try {
-    const { email } = req.body;
 
-    console.log("email received inside resendController", email);
+    const { token } = req.body
+    console.log('token', token)
+    const decoded = jwt.decode(token, process.env.JWT_SECRET);
+    const email = decoded.email;
+     console.log("email received inside resendController", email);
 
     // capture email from incoming req
     // search through db to find user with email
@@ -232,13 +242,13 @@ export async function resendEmailController(req, res) {
       subject: "Welcome to Inkpot",
       html: `<p>Hi ${user.username},</p>
       <p>Thank you for registering at <strong>Inkpot</strong>. We're excited to have you on board :)</p>
-      <p>Please verify your email by clicking the <a href=http://localhost:3000/api/auth/verify-email?token=${emailVerificationToken}>link</a></p>
+      <p>Please verify your email by clicking the <a href=${process.env.FRONTEND_URL}/verified-email?token=${emailVerificationToken}>link</a></p>
       <p>Thanks, Inkpot Team</p>`,
     });
 
     res.status(200).json({
       message: "Verification email resent successfully",
-      success: true,
+      success: "resent",
       user: {
         id: user._id,
         username: user.username,
@@ -273,7 +283,7 @@ export async function getMeController(req, res) {
     message: "user fetched successfully",
     success: true,
     user: {
-      user: user.username,
+      username: user.username,
       id: user._id,
       verified: user.verified,
     },
