@@ -57,8 +57,8 @@ const chatSlice = createSlice({
       state.chats = chats.reduce((obj, chat) => {
         obj[chat._id] = {
           ...chat,
-          title: chat.title.replace(/"/g, ""),
-          messages: [],
+          title: chat.title,
+          messages: state.chats[chat._id]?.messages || []
         };
 
         return obj;
