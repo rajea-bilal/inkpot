@@ -8,6 +8,8 @@ import { setCurrentChatId } from "../chat.slice";
 import ChatInput from "../components/ChatInput";
 import ChatSidebar from "../components/ChatSidebar";
 import MinimalSidebar from "../components/MinimalSidebar";
+import MobileDrawer from "../components/MobileDrawer";
+import { MenuIcon } from "../components/Icons";
 
 const ThreadItem = ({ thread, isActive, onClick }) => {
   return (
@@ -38,6 +40,7 @@ const ChatPage = () => {
   let currentChatId = useSelector((state) => state.chat.currentChatId);
 
   const [userMessage, setUserMessage] = useState();
+  const [threadsOpen, setThreadsOpen] = useState(false);
 
   console.log("currentChatId in the ChatPage", currentChatId);
   console.log("userMessage state inside ChatPage:", userMessage);
@@ -55,6 +58,7 @@ const ChatPage = () => {
   const openChat = (chatId) => {
     dispatch(setCurrentChatId(chatId));
     fetchChatMessages(chatId);
+    setThreadsOpen(false); // close the drawer after picking a thread on mobile
   };
 
   const handleAddNewChat = () => {
@@ -76,17 +80,29 @@ const ChatPage = () => {
 
       {/* Threads Panel (Secondary adjacent sidebar) */}
 
-      <ChatSidebar
-        allChats={allChats}
-        openChat={openChat}
-        handleAddNewChat={handleAddNewChat}
-      />
+      <MobileDrawer
+        open={threadsOpen}
+        onClose={() => setThreadsOpen(false)}
+      >
+        <ChatSidebar
+          allChats={allChats}
+          openChat={openChat}
+          handleAddNewChat={handleAddNewChat}
+        />
+      </MobileDrawer>
 
       {/* Chat Main */}
 
       <main className="flex-1 flex flex-col bg-[#FFFEF2] relative z-10">
-        <header className="h-16 border-b border-[#191918]/10 flex items-center px-10 justify-between">
+        <header className="h-16 border-b border-[#191918]/10 flex items-center px-4 sm:px-10 justify-between">
           <div className="flex items-center gap-3">
+            <button
+              onClick={() => setThreadsOpen(true)}
+              aria-label="Open conversations"
+              className="md:hidden text-[#191918] cursor-pointer flex"
+            >
+              <MenuIcon />
+            </button>
             <div className="w-1 h-1 bg-[#FCAA2D] rounded-full" />
             <span className="font-mono text-[0.7rem] uppercase tracking-widest text-[#191918]">
               {currentChatId
@@ -96,7 +112,7 @@ const ChatPage = () => {
           </div>
         </header>
 
-        <div className="flex-1 overflow-y-auto px-[15%] pt-16 pb-8 main_chat">
+        <div className="flex-1 overflow-y-auto px-4 sm:px-8 lg:px-[15%] pt-16 pb-8 main_chat">
           {/* if theres no chatId means there's no chat so we render a welcome message */}
           {!currentChatId && (
             <div className="flex flex-col gap-6">
@@ -156,7 +172,7 @@ const ChatPage = () => {
         </div>
 
         {currentChatId && (
-          <div className="px-[15%] pb-8 pt-8 bg-linear-to-t from-[#FFFEF2] from-80% to-transparent">
+          <div className="px-4 sm:px-8 lg:px-[15%] pb-8 pt-8 bg-linear-to-t from-[#FFFEF2] from-80% to-transparent">
             {/* chat Input */}
             <ChatInput
               currentChatId={currentChatId}
