@@ -50,6 +50,13 @@ const agent = createAgent({
 // give appropriate langChain labels based on message content
 // translating the raw messages into LangChain format by giving appropriate labels
 
+// app stores chat history as plain objects: { role: "user", content: "..." }. 
+// The agent doesn't speak that format — 
+// it wants typed LangChain objects (HumanMessage, AIMessage). 
+// So .map() walks your stored history and converts each one into the right type.
+//  That's all it does. It runs once, produces the starting message list, and hands it to agent.invoke. 
+// The tool loop hasn't begun yet.
+
 export async function generateResponse(messages) {
   console.log(messages);
   const response = await agent.invoke({
@@ -85,5 +92,5 @@ export async function generateChatTitle(message) {
       `),
   ]);
 
-  return response.text;
+  return response.text.replace(/"/g, "")
 }
